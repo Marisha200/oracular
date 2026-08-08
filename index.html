@@ -11,12 +11,12 @@
             theme: {
                 extend: {
                     colors: {
-                        'rz-sand': '#F5F2EB', // Fondo principal, arena suave
-                        'rz-terracotta': '#C87966', // Acentos principales, cálido
-                        'rz-sage': '#98A890', // Verde salvia relajante
-                        'rz-charcoal': '#3A4042', // Texto principal, gris oscuro
-                        'rz-cream': '#FCFBF8', // Fondo de tarjetas
-                        'rz-gold': '#D4AF37' // Detalles
+                        'rz-sand': '#F5F2EB',
+                        'rz-terracotta': '#C87966',
+                        'rz-sage': '#98A890',
+                        'rz-charcoal': '#3A4042',
+                        'rz-cream': '#FCFBF8',
+                        'rz-gold': '#D4AF37'
                     },
                     fontFamily: {
                         'serif': ['Lora', 'serif'],
@@ -51,21 +51,57 @@
             background: theme('colors.rz-terracotta');
         }
 
-        /* Inputs */
+        /* Inputs - Estilos mejorados para invitar a escribir */
         input[type="text"], textarea, input[type="date"] {
             width: 100%;
-            background-color: transparent;
+            background-color: rgba(255, 255, 255, 0.4); /* Fondo sutil de campo */
             border: none;
-            border-bottom: 1px solid theme('colors.rz-terracotta');
-            padding: 8px 0;
+            border-bottom: 1px dashed theme('colors.rz-sage'); /* Línea punteada indica espacio a rellenar */
+            padding: 12px 14px;
+            border-radius: 6px 6px 0 0;
             color: theme('colors.rz-charcoal');
             font-family: theme('fontFamily.sans');
-            transition: border-color 0.3s ease;
+            transition: all 0.3s ease;
             resize: none;
         }
+        
+        /* Excepciones para campos que ya tienen su propio fondo (como en secciones oscuras) */
+        input.bg-transparent, textarea.bg-transparent {
+            background-color: transparent !important;
+            padding-left: 0;
+            padding-right: 0;
+        }
+
+        input[type="text"]:hover:not([readonly]), textarea:hover:not([readonly]), input[type="date"]:hover:not([readonly]) {
+            background-color: rgba(255, 255, 255, 0.7);
+        }
+
         input[type="text"]:focus, textarea:focus, input[type="date"]:focus {
             outline: none;
-            border-bottom: 2px solid theme('colors.rz-terracotta');
+            background-color: #ffffff;
+            border-bottom: 2px solid theme('colors.rz-terracotta'); /* Línea sólida al escribir */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+        
+        /* Estilos de Placeholders (Textos guía) */
+        input::placeholder, textarea::placeholder {
+            color: theme('colors.rz-sage');
+            opacity: 0.9;
+            font-style: italic;
+            font-weight: 300;
+        }
+        
+        /* Placeholder especial para fondo oscuro (Última sección) */
+        .text-white::placeholder {
+            color: rgba(255, 255, 255, 0.6) !important;
+        }
+
+        /* Campos de solo lectura (como resultados calculados) */
+        input[readonly] {
+            border-bottom: 1px solid transparent !important;
+            border: 1px solid rgba(152, 168, 144, 0.3); /* Borde sage suave */
+            background-color: rgba(152, 168, 144, 0.05) !important;
+            cursor: default;
         }
         
         /* Checkboxes custom */
@@ -136,6 +172,7 @@
             .section-container { display: block; opacity: 1; page-break-after: always; }
             .shadow-lg { box-shadow: none; }
             .print-hide { display: none; }
+            input[type="text"], textarea, input[type="date"] { background-color: transparent !important; }
         }
     </style>
 </head>
@@ -231,11 +268,11 @@
                         <div class="space-y-6 bg-rz-sand/50 p-6 rounded-lg">
                             <div>
                                 <label class="block text-sm font-medium text-rz-sage mb-1">Mi nombre:</label>
-                                <input type="text" id="input-nombre" placeholder="Escribe aquí..." class="save-data text-lg font-serif">
+                                <input type="text" id="input-nombre" placeholder="Escribe tu nombre aquí..." class="save-data text-lg font-serif">
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-rz-sage mb-1">La pregunta que traigo hoy:</label>
-                                <textarea id="input-pregunta-inicial" rows="2" placeholder="Aquello que te trajo a este espacio..." class="save-data text-lg font-serif"></textarea>
+                                <textarea id="input-pregunta-inicial" rows="2" placeholder="Describe aquello que te trajo a este espacio hoy..." class="save-data text-lg font-serif"></textarea>
                             </div>
                         </div>
                     </div>
@@ -251,7 +288,7 @@
                             <div>
                                 <label class="block font-medium mb-2">¿Cómo llegás hoy?</label>
                                 <p class="text-sm text-gray-500 mb-2">Elegí palabras simples. No hace falta redactar el prólogo de tu biografía.</p>
-                                <input type="text" id="input-como-llego" class="save-data">
+                                <input type="text" id="input-como-llego" placeholder="Ej: Cansada pero atenta, con ganas de entender algo..." class="save-data">
                             </div>
                             <div>
                                 <label class="block font-medium mb-2">Si tu estado interior fuera un clima, ¿cuál sería?</label>
@@ -259,11 +296,11 @@
                             </div>
                             <div>
                                 <label class="block font-medium mb-2">¿Qué tema ocupa demasiado espacio en tu cabeza últimamente?</label>
-                                <textarea id="input-tema-cabeza" rows="2" class="save-data"></textarea>
+                                <textarea id="input-tema-cabeza" rows="2" placeholder="Escribe sobre eso que te da vueltas en la mente..." class="save-data"></textarea>
                             </div>
                             <div>
                                 <label class="block font-medium mb-2">¿Qué te gustaría poder mirar de otra manera al terminar este encuentro?</label>
-                                <textarea id="input-mirar-distinto" rows="2" class="save-data"></textarea>
+                                <textarea id="input-mirar-distinto" rows="2" placeholder="¿Qué perspectiva quisieras renovar? Escribe aquí..." class="save-data"></textarea>
                             </div>
                         </div>
                     </div>
@@ -299,17 +336,17 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                             <div>
                                 <label class="block text-sm font-medium text-rz-sage mb-1">La puerta que elegí:</label>
-                                <input type="text" id="input-puerta-elegida" class="save-data font-serif text-xl text-center readonly bg-gray-50 rounded p-2" readonly>
+                                <input type="text" id="input-puerta-elegida" placeholder="(Selecciona una opción arriba)" class="save-data font-serif text-xl text-center readonly" readonly>
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-rz-sage mb-1">La puerta que evité:</label>
-                                <input type="text" id="input-puerta-evitada" placeholder="Escribe la letra..." class="save-data font-serif text-xl text-center">
+                                <input type="text" id="input-puerta-evitada" placeholder="Escribe la letra que evitaste..." class="save-data font-serif text-xl text-center">
                             </div>
                         </div>
 
                         <div>
                             <label class="block font-medium mb-2">¿Qué parte de mi vida se parece hoy a esa puerta?</label>
-                            <textarea id="input-vida-puerta" rows="3" class="save-data"></textarea>
+                            <textarea id="input-vida-puerta" rows="3" placeholder="Reflexiona aquí sobre la situación que resuena con esa puerta..." class="save-data"></textarea>
                         </div>
                     </div>
                 </section>
@@ -321,6 +358,7 @@
                         <p class="text-gray-500 mb-8 italic">Elegí por atracción, rechazo o una mezcla sospechosamente interesante.</p>
 
                         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 mb-8 max-h-96 overflow-y-auto pr-2 border border-gray-100 p-2 rounded-lg bg-white/50">
+                            <!-- Arcanos -->
                             <div class="p-2 border border-gray-100 rounded text-center hover:bg-rz-sand transition cursor-pointer arcano-option flex flex-col justify-center min-h-[80px]">
                                 <p class="font-bold text-sm">El Loco</p><p class="text-[10px] text-gray-500 leading-tight mt-1">comenzar sin tener todo resuelto</p>
                             </div>
@@ -392,15 +430,15 @@
                         <div class="space-y-6">
                             <div>
                                 <label class="block text-sm font-medium text-rz-sage mb-1">El arcano que me atrae:</label>
-                                <input type="text" id="input-arcano-atrae" class="save-data text-lg font-serif">
+                                <input type="text" id="input-arcano-atrae" placeholder="Haz clic en una carta de arriba o escribe su nombre..." class="save-data text-lg font-serif">
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-rz-sage mb-1">El que me incomoda o rechazo:</label>
-                                <input type="text" id="input-arcano-incomoda" class="save-data text-lg font-serif">
+                                <input type="text" id="input-arcano-incomoda" placeholder="Haz clic en una carta de arriba o escribe su nombre..." class="save-data text-lg font-serif">
                             </div>
                             <div>
                                 <label class="block font-medium mb-2">¿Qué cualidad podría estar pidiéndome integrar?</label>
-                                <textarea id="input-arcano-integrar" rows="2" class="save-data"></textarea>
+                                <textarea id="input-arcano-integrar" rows="2" placeholder="Escribe qué aspecto de este arcano necesitas incorporar o prestar atención..." class="save-data"></textarea>
                             </div>
                         </div>
                     </div>
@@ -423,19 +461,19 @@
                         <div class="space-y-6">
                             <div>
                                 <label class="block font-medium mb-1">¿Qué característica rechazo especialmente?</label>
-                                <input type="text" id="input-sombra-rechazo" class="save-data">
+                                <input type="text" id="input-sombra-rechazo" placeholder="Ej: Su excesiva necesidad de control o protagonismo..." class="save-data">
                             </div>
                             <div>
                                 <label class="block font-medium mb-1">¿Dónde aparece esa cualidad, aunque sea en una versión pequeña, dentro mío?</label>
-                                <textarea id="input-sombra-adentro" rows="2" class="save-data"></textarea>
+                                <textarea id="input-sombra-adentro" rows="2" placeholder="¿En qué situaciones o áreas actúas tú de manera similar? Escribe aquí..." class="save-data"></textarea>
                             </div>
                             <div>
                                 <label class="block font-medium mb-1">¿Cuándo pudo haberme protegido o ayudado?</label>
-                                <textarea id="input-sombra-ayuda" rows="2" class="save-data"></textarea>
+                                <textarea id="input-sombra-ayuda" rows="2" placeholder="¿De qué te ha salvado o protegido usar esa actitud? Reflexiona aquí..." class="save-data"></textarea>
                             </div>
                             <div>
                                 <label class="block font-medium mb-1">¿Cómo sería integrar esa cualidad sin dejar que gobierne mi vida?</label>
-                                <textarea id="input-sombra-integrar" rows="2" class="save-data"></textarea>
+                                <textarea id="input-sombra-integrar" rows="2" placeholder="Escribe cómo podrías usar esta característica a tu favor en su justa medida..." class="save-data"></textarea>
                             </div>
                         </div>
                     </div>
@@ -489,7 +527,7 @@
 
                         <div>
                             <label class="block font-medium mb-2">¿Qué frase te dio más ganas de discutir? Esa suele merecer una segunda mirada.</label>
-                            <textarea id="input-bingo-discutir" rows="2" class="save-data"></textarea>
+                            <textarea id="input-bingo-discutir" rows="2" placeholder="Copia aquí la frase y anota por qué te genera resistencia o molestia..." class="save-data"></textarea>
                         </div>
                         
                         <div class="mt-6 text-center text-sm font-serif italic text-rz-terracotta">
@@ -532,11 +570,11 @@
                         <div class="space-y-6 bg-white p-6 rounded border border-rz-sand">
                             <div>
                                 <label class="block text-sm font-medium text-rz-sage mb-1">La pregunta que traje (cerrada/ansiosa):</label>
-                                <input type="text" id="input-pregunta-tramposa" class="save-data">
+                                <input type="text" id="input-pregunta-tramposa" placeholder="Escribe esa pregunta ansiosa o cerrada que tienes en mente..." class="save-data">
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-rz-terracotta mb-1">Ahora le quito la necesidad de certeza y la convierto en una pregunta que abre:</label>
-                                <textarea id="input-pregunta-abierta" rows="2" class="save-data font-serif text-lg text-rz-charcoal"></textarea>
+                                <textarea id="input-pregunta-abierta" rows="2" placeholder="Reescribe tu pregunta para darte agencia y opciones de acción (Ej: ¿Qué puedo hacer hoy para...?)" class="save-data font-serif text-lg text-rz-charcoal"></textarea>
                             </div>
                         </div>
                     </div>
@@ -581,11 +619,11 @@
                         <div class="space-y-6">
                             <div>
                                 <label class="block font-medium mb-1">¿Qué relación aparece entre las tres posiciones?</label>
-                                <textarea id="input-tirada-relacion" rows="3" class="save-data"></textarea>
+                                <textarea id="input-tirada-relacion" rows="3" placeholder="Escribe cómo crees que se conectan los mensajes de estas tres cartas entre sí..." class="save-data"></textarea>
                             </div>
                             <div>
                                 <label class="block font-medium mb-1 text-rz-terracotta">Una acción posible -no una garantía- que surge de esta lectura:</label>
-                                <textarea id="input-tirada-accion" rows="2" class="save-data font-serif"></textarea>
+                                <textarea id="input-tirada-accion" rows="2" placeholder="Escribe el primer pequeño paso que podrías dar en base a esta lectura..." class="save-data font-serif"></textarea>
                             </div>
                         </div>
                     </div>
@@ -626,7 +664,7 @@
                             </div>
                             <div class="w-32">
                                 <label class="block text-xs font-medium text-rz-terracotta mb-1">Mi número es:</label>
-                                <input type="text" id="input-num-resultado" class="save-data font-serif text-2xl text-center bg-white border border-rz-terracotta rounded" readonly>
+                                <input type="text" id="input-num-resultado" placeholder="-" class="save-data font-serif text-2xl text-center bg-white border border-rz-terracotta rounded" readonly>
                             </div>
                         </div>
 
@@ -663,7 +701,7 @@
 
                         <div>
                             <label class="block font-serif text-lg text-rz-terracotta mb-2">Mi respuesta a la pregunta de mi número de hoy:</label>
-                            <textarea id="input-num-respuesta" rows="3" class="save-data text-lg"></textarea>
+                            <textarea id="input-num-respuesta" rows="3" placeholder="Busca la pregunta de tu número calculado arriba y reflexiona sobre tu respuesta aquí..." class="save-data text-lg"></textarea>
                         </div>
                     </div>
                 </section>
@@ -677,19 +715,19 @@
                         <div class="space-y-6 mb-8">
                             <div class="flex items-end">
                                 <span class="font-medium mr-2 whitespace-nowrap pb-2">Empezaría eso que deseo si...</span>
-                                <input type="text" id="excusa-1" class="save-data flex-1">
+                                <input type="text" id="excusa-1" class="save-data flex-1" placeholder="completa la condición aquí...">
                             </div>
                             <div class="flex items-end">
                                 <span class="font-medium mr-2 whitespace-nowrap pb-2">Pondría un límite si...</span>
-                                <input type="text" id="excusa-2" class="save-data flex-1">
+                                <input type="text" id="excusa-2" class="save-data flex-1" placeholder="completa la condición aquí...">
                             </div>
                             <div class="flex items-end">
                                 <span class="font-medium mr-2 whitespace-nowrap pb-2">Me permitiría descansar si...</span>
-                                <input type="text" id="excusa-3" class="save-data flex-1">
+                                <input type="text" id="excusa-3" class="save-data flex-1" placeholder="completa la condición aquí...">
                             </div>
                             <div class="flex items-end">
                                 <span class="font-medium mr-2 whitespace-nowrap pb-2">Diría lo que siento si...</span>
-                                <input type="text" id="excusa-4" class="save-data flex-1">
+                                <input type="text" id="excusa-4" class="save-data flex-1" placeholder="completa la condición aquí...">
                             </div>
                         </div>
 
@@ -699,7 +737,7 @@
 
                         <div>
                             <label class="block font-bold text-rz-terracotta mb-2">La condición que más uso para postergarme:</label>
-                            <input type="text" id="excusa-principal" class="save-data text-lg font-serif text-center" placeholder="Ej: Tener más tiempo, tener seguridad, que el otro cambie...">
+                            <input type="text" id="excusa-principal" class="save-data text-lg font-serif text-center" placeholder="Ej: 'Tener más tiempo', 'Tener seguridad absoluta', 'Que el otro cambie'...">
                         </div>
                     </div>
                 </section>
@@ -721,22 +759,22 @@
 
                             <div>
                                 <label class="block font-medium mb-1">Espero que hayas recordado...</label>
-                                <textarea id="capsula-1" rows="2" class="save-data bg-transparent"></textarea>
+                                <textarea id="capsula-1" rows="2" class="save-data bg-transparent" placeholder="Escribe aquí eso tan importante que no quieres perder de vista..."></textarea>
                             </div>
                             
                             <div>
                                 <label class="block font-medium mb-1">No vuelvas a olvidarte de...</label>
-                                <textarea id="capsula-2" rows="2" class="save-data bg-transparent"></textarea>
+                                <textarea id="capsula-2" rows="2" class="save-data bg-transparent" placeholder="Escribe esa lección o límite que te costó aprender..."></textarea>
                             </div>
 
                             <div>
                                 <label class="block font-medium mb-1">Cuando tengas dudas...</label>
-                                <textarea id="capsula-3" rows="2" class="save-data bg-transparent"></textarea>
+                                <textarea id="capsula-3" rows="2" class="save-data bg-transparent" placeholder="Déjate aquí un buen consejo para los días difíciles..."></textarea>
                             </div>
 
                             <div class="pt-8 flex justify-end">
                                 <div class="w-64 text-center">
-                                    <input type="text" id="capsula-firma" class="save-data font-serif text-xl italic text-center border-b-2 border-rz-charcoal bg-transparent">
+                                    <input type="text" id="capsula-firma" class="save-data font-serif text-xl italic text-center border-b-2 border-rz-charcoal bg-transparent" placeholder="Tu firma y aclaración...">
                                     <p class="text-xs text-gray-500 mt-2 uppercase tracking-wider">Firma del yo que hoy sí estuvo presente</p>
                                 </div>
                             </div>
@@ -754,15 +792,15 @@
                         <div class="space-y-6 text-left max-w-xl mx-auto bg-white/10 p-6 rounded-lg backdrop-blur-sm">
                             <div>
                                 <label class="block text-sm text-rz-sand font-medium mb-1">Una idea que se movió:</label>
-                                <input type="text" id="cierre-idea" class="save-data bg-transparent border-b border-white/50 text-white placeholder-white/30" placeholder="...">
+                                <input type="text" id="cierre-idea" class="save-data bg-transparent border-b border-white/50 text-white placeholder-white/30" placeholder="Escribe aquí esa idea o perspectiva que cambió...">
                             </div>
                             <div>
                                 <label class="block text-sm text-rz-sand font-medium mb-1">Una acción concreta que elijo:</label>
-                                <input type="text" id="cierre-accion" class="save-data bg-transparent border-b border-white/50 text-white placeholder-white/30" placeholder="...">
+                                <input type="text" id="cierre-accion" class="save-data bg-transparent border-b border-white/50 text-white placeholder-white/30" placeholder="Escribe aquí tu pequeña acción elegida...">
                             </div>
                             <div>
                                 <label class="block text-sm text-rz-sand font-medium mb-1 font-bold">Algo que hoy puedo dejar de exigirle al futuro:</label>
-                                <input type="text" id="cierre-soltar" class="save-data bg-transparent border-b-2 border-white text-white font-serif text-lg placeholder-white/30" placeholder="...">
+                                <input type="text" id="cierre-soltar" class="save-data bg-transparent border-b-2 border-white text-white font-serif text-lg placeholder-white/30" placeholder="Escribe qué exigencia o expectativa decides soltar...">
                             </div>
                         </div>
                         
